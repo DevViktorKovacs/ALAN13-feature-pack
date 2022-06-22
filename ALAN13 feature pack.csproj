@@ -1,0 +1,9 @@
+<Project Sdk="Godot.NET.Sdk/3.3.0">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>ALAN13featurepack</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Steam\" />
+  </ItemGroup>
+</Project>
