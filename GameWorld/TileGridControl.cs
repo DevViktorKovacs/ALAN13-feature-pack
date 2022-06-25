@@ -30,7 +30,7 @@ namespace ALAN13featurepack.GameWorld
 
 		public int MaxShift { get { return maxShift; } set { maxShift = value; } }
 
-		private int maxShift = 600;
+		private int maxShift = 800;
 
 		readonly TileCell[,] cells;
 
@@ -81,6 +81,8 @@ namespace ALAN13featurepack.GameWorld
 			factory = new StructureFactory(this);
 
 			InitializeCells();
+
+			InstantiateCellSelection(GetCellAt(0, 0));
 		}
 
 		/// <summary>
@@ -100,6 +102,11 @@ namespace ALAN13featurepack.GameWorld
 			}
 
 			return cells[x, y];
+		}
+
+		public TileCell GetCellAt(int x, int y)
+		{
+			return cells[x + offsetX, y + offsetY];
 		}
 
 		public Vector2 GetCellCenterAtGridPosition(Vector2 gridPosition)
@@ -258,6 +265,65 @@ namespace ALAN13featurepack.GameWorld
 			ground.Scale = scale;
 			shadows.Scale = scale;
 			objects.Scale = scale;
+		}
+
+		private void InstantiateCellSelection(TileCell cell)
+		{
+			var resource = (PackedScene)ResourceLoader.Load("res://GameWorld/CellSelection.tscn"); 
+
+			var instance = resource.Instance();
+
+			var sprite = instance.GetChild<Sprite>();
+
+			var position = objects.GetCellCenterWorldPosition(cell.GridPosition);
+
+			sprite.Position = position;
+
+			sprite.ZIndex++;
+
+			instance.RemoveChild(sprite);
+
+			instance.Free();
+
+			shadows.AddChild(sprite);
+
+			tileCellSelection = sprite;
+		}
+
+		public TileCell SelectCell()
+		{
+			var worldPosition = shadows.GetLocalMousePosition();
+
+			var gridposition = shadows.WorldToMap(worldPosition);
+
+			var cell = GetCellAt(gridposition);
+
+			tileCellSelection.Position = objects.GetCellCenterWorldPosition(cell.GridPosition);
+
+			if (IsCellEmpty(cell)) tileCellSelection.Visible = false;
+
+			else tileCellSelection.Visible = true;
+
+			SelectedCell = cell;
+
+			return cell;
+		}
+
+		public TileCell GetCellFromLocalPosition(Vector2 localPosition)
+		{
+			var gridposition = objects.WorldToMap(localPosition);
+
+			return GetCellAt(gridposition);
+		}
+
+		public TileCell GetCellAtMousePosition()
+		{
+			return GetCellFromLocalPosition(GetLocalMousePosition());
+		}
+
+		public Vector2 GetLocalMousePosition()
+		{
+			return shadows.GetLocalMousePosition();
 		}
 	}
 }

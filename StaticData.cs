@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace ALAN13featurepack
 {
+	/// <summary>
+	/// This works as an in memory read-only database
+	/// </summary>
     public class StaticData
     {
 		public static Dictionary<WorldOrientation, Vector2> OrientationData = new Dictionary<WorldOrientation, Vector2>
@@ -84,21 +87,32 @@ namespace ALAN13featurepack
 		public static Dictionary<string, StructureData> StructureDataSet = new Dictionary<string, StructureData>
 		{
 
-			//{
-			//	"ExitFence",
-			//	new StructureData
-			//		{
-			//			StructureType = StructureType.Wall,
-			//			Scene = "res://Doodads/FenceWithArrow.tscn",
-			//			DirectionalOffset = new Dictionary<WorldOrientation, Vector2>()
-			//			{
-			//				{WorldOrientation.SouthEast, new Vector2(110,50) },
-			//				{WorldOrientation.SouthWest, new Vector2(-50, 35) },
-			//				{WorldOrientation.NorthEast, new Vector2(28, -8) },
-			//			},
-			//			StructureColor = StructureColor.Green
-			//		}
-			//},
+            {
+                "buildings.png 0",
+                new StructureData
+                    {
+                        StructureType = StructureType.Wall,
+                        Scene = "res://GameWorld/Structures/HouseA.tscn",
+                    }
+            },
+
+			{
+				"buildings.png 1",
+				new StructureData
+					{
+						StructureType = StructureType.Wall,
+						Scene = "res://GameWorld/Structures/HouseB.tscn",
+					}
+			},
+
+			{
+				"buildings.png 2",
+				new StructureData
+					{
+						StructureType = StructureType.Wall,
+						Scene = "res://GameWorld/Structures/HouseC.tscn",
+					}
+			},
 
 		};
 	}

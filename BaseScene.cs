@@ -22,6 +22,8 @@ public class BaseScene : Node2D
 		loader.LoadingFinished += Loader_LoadingFinished;
 
 		loader.LoadAsset(pathToLevel, AssetKeys.FirstLevel.ToString(), 10);
+
+		InputProcessor.VerboseLogging = true;
 	}
 
 	private void Loader_LoadingFinished(object sender, LoadingFinishedEventArgs e)
