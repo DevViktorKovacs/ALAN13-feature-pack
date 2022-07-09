@@ -2,10 +2,6 @@
 using ALAN13featurepack.Utility;
 using Godot;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ALAN13featurepack.GameWorld
 {
@@ -307,6 +303,17 @@ namespace ALAN13featurepack.GameWorld
 			SelectedCell = cell;
 
 			return cell;
+		}
+
+		public TileCell GetTargetCell(Vector2 position, Vector2 direction)
+		{
+			var gridPosition = objects.WorldToMap(position);
+
+			var newGridPositon = gridPosition + direction;
+
+			var result = GetCellAt(newGridPositon);
+
+			return result;
 		}
 
 		public TileCell GetCellFromLocalPosition(Vector2 localPosition)

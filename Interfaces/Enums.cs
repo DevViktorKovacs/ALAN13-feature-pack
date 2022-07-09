@@ -80,4 +80,32 @@ namespace ALAN13featurepack.Interfaces
         Empty = 0,
         FirstLevel = 1,
     }
+
+    public enum StateEnum
+    {
+        Idle = 18,
+        Turn = 2,
+        Move = 1,
+        Dead = 8,
+        SmartMove = 19,
+    }
+
+    public enum AnimationKeys
+    {
+        Default = 0,
+        TurnLeft = 8,
+        TurnRight = 9,
+        NorthEast = 10,
+        NorthWest = 11,
+        SouthEast = 12,
+        SouthWest = 13,
+        Idle = 16,
+        StartWalk = 17,
+        StopWalk = 18,
+        Walk = 19,
+        LeftClick = 26,
+        RightHold = 27,
+        Scroll = 28,
+        LeftHold = 29,
+    }
 }

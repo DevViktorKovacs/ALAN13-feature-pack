@@ -115,6 +115,21 @@ namespace ALAN13featurepack
 			},
 
 		};
+
+		public static Dictionary<AnimationKeys, string> AnimationData = new Dictionary<AnimationKeys, string>
+		{
+			{AnimationKeys.Default, "default" },
+			{AnimationKeys.Idle, "Idle" },
+			{AnimationKeys.TurnLeft, "TurnLeft" },
+			{AnimationKeys.TurnRight, "TurnRight" },
+			{AnimationKeys.NorthEast, "NE" },
+			{AnimationKeys.NorthWest, "NW" },
+			{AnimationKeys.SouthWest, "SW" },
+			{AnimationKeys.SouthEast, "SE" },
+			{AnimationKeys.StartWalk, "StartWalk" },
+			{AnimationKeys.StopWalk, "StopWalk" },
+			{AnimationKeys.Walk, "Walk" },
+		};
 	}
 }
 
