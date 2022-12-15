@@ -136,118 +136,118 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 		protected virtual void Robot_EnteringTileCell(object sender, EnteringCellEventArgs e)
 		{
-			DebugHelper.PrettyPrintVerbose($"{Subject.Name}: entering new cell {e.NewCell.GridPosition}", ConsoleColor.DarkGray);
+			//DebugHelper.PrettyPrintVerbose($"{Subject.Name}: entering new cell {e.NewCell.GridPosition}", ConsoleColor.DarkGray);
 
-			routeCellsIndex++;
+			//routeCellsIndex++;
 
-			if (interruptionRequested)
-			{
-				Decelerate();
+			//if (interruptionRequested)
+			//{
+			//	Decelerate();
 
-				checkPointReached = true;
+			//	checkPointReached = true;
 
-				return;
-			}
+			//	return;
+			//}
 
-			if (accelerating
-				&& routeCells.TryToGetValue(nextCheckPointIndex, out TileCell result)
-				&& e.NewCell != result
-				&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result2)
-				&& e.NewCell != result2)
-			{
-				accelerating = false;
+			//if (accelerating
+			//	&& routeCells.TryToGetValue(nextCheckPointIndex, out TileCell result)
+			//	&& e.NewCell != result
+			//	&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result2)
+			//	&& e.NewCell != result2)
+			//{
+			//	accelerating = false;
 
-				MoveToCell(routeCells[nextCheckPointIndex], Tween.TransitionType.Linear, Tween.EaseType.Out, Math.Abs(Robot.MoveDuration * 0.25f * nextPointGridDistance), false);
+			//	MoveToCell(routeCells[nextCheckPointIndex], Tween.TransitionType.Linear, Tween.EaseType.Out, Math.Abs(Robot.MoveDuration * 0.25f * nextPointGridDistance), false);
 
-				return;
-			}
+			//	return;
+			//}
 
-			if (routeCells.Count > 1
-				&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result3)
-				&& e.NewCell == result3)
-			{
-				Decelerate();
+			//if (routeCells.Count > 1
+			//	&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result3)
+			//	&& e.NewCell == result3)
+			//{
+			//	Decelerate();
 
-				return;
-			}
+			//	return;
+			//}
 
-			checkPointReached = true;
+			//checkPointReached = true;
 
 			return;
 		}
 
 		private void Decelerate()
 		{
-			if (accelerating) accelerating = false;
+			//if (accelerating) accelerating = false;
 
-			TileCell targetCell = routeCells.LastOrDefault();
+			//TileCell targetCell = routeCells.LastOrDefault();
 
-			if (routeCells.TryToGetValue(routeCellsIndex, out TileCell result))
-			{
-				targetCell = result;
+			//if (routeCells.TryToGetValue(routeCellsIndex, out TileCell result))
+			//{
+			//	targetCell = result;
 
-				MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Robot.MoveDuration * 0.75f, false);
+			//	MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Robot.MoveDuration * 0.75f, false);
 
-				return;
-			}
+			//	return;
+			//}
 
-			DebugHelper.PrintError($"{Subject.Name}: There is no cell at {routeCellsIndex} in routecells for SmartMoveState");
+			//DebugHelper.PrintError($"{Subject.Name}: There is no cell at {routeCellsIndex} in routecells for SmartMoveState");
 
-			MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Robot.MoveDuration * 0.75f, false);
+			//MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Robot.MoveDuration * 0.75f, false);
 		}
 
 		public override void Invoke(CommandKey input)
 		{
-			if (inProgress)
-			{
-				interruptionRequested = true;
+			//if (inProgress)
+			//{
+			//	interruptionRequested = true;
 
-				newTarget = Robot.TileWorld.SelectedCell;
+			//	newTarget = Robot.TileWorld.SelectedCell;
 
-				DebugHelper.PrettyPrintVerbose($"InterruptionRequest recieved! New target: {newTarget}", ConsoleColor.DarkGray);
+			//	DebugHelper.PrettyPrintVerbose($"InterruptionRequest recieved! New target: {newTarget}", ConsoleColor.DarkGray);
 
-				return;
-			}
+			//	return;
+			//}
 
-			if (CalculatePath(Robot.TileWorld.SelectedCell))
-			{
-				inProgress = true;
+			//if (CalculatePath(Robot.TileWorld.SelectedCell))
+			//{
+			//	inProgress = true;
 
-				EvaluateNextMove();
-			}
+			//	EvaluateNextMove();
+			//}
 		}
 
 		protected bool CalculatePath(TileCell targetCell)
 		{
-			checkPointReached = false;
+			//checkPointReached = false;
 
-			DebugHelper.PrettyPrintVerbose("Calculating path*...", ConsoleColor.DarkGray);
+			//DebugHelper.PrettyPrintVerbose("Calculating path*...", ConsoleColor.DarkGray);
 
-			var currentCell = Robot.GetCurrentCell();
+			//var currentCell = Robot.GetCurrentCell();
 
-			var list = Robot.TileWorld.AStar2D.GetIdPath(currentCell.AStarId, targetCell.AStarId);
+			//var list = Robot.TileWorld.AStar2D.GetIdPath(currentCell.AStarId, targetCell.AStarId);
 
-			if (list.Length == 0)
-			{
-				DebugHelper.PrettyPrintVerbose("No avaible path found", ConsoleColor.DarkGray);
+			//if (list.Length == 0)
+			//{
+			//	DebugHelper.PrettyPrintVerbose("No avaible path found", ConsoleColor.DarkGray);
 
-				Robot.SoundController.PlaySoundEffect(SoundController.CHIRP_SOUND);
+			//	Robot.SoundController.PlaySoundEffect(SoundController.CHIRP_SOUND);
 
-				return false;
-			}
+			//	return false;
+			//}
 
-			routeCellsIndex = 1;
+			//routeCellsIndex = 1;
 
-			var cellList = list.ToList().Select(id => Robot.TileWorld.GetCellByAStarId(id));
+			//var cellList = list.ToList().Select(id => Robot.TileWorld.GetCellByAStarId(id));
 
-			routeCells = cellList.ToList();
+			//routeCells = cellList.ToList();
 
-			cellList.ToList().ForEach(cl =>
-			{
-				DebugHelper.PrettyPrintVerbose($"Path step:{ cl}", ConsoleColor.DarkGray);
-			}
+			//cellList.ToList().ForEach(cl =>
+			//{
+			//	DebugHelper.PrettyPrintVerbose($"Path step:{ cl}", ConsoleColor.DarkGray);
+			//}
 
-			);
+			//);
 
 			return true;
 		}
@@ -258,87 +258,87 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 			DebugHelper.PrettyPrintVerbose("Evaluating next move...", ConsoleColor.DarkGray);
 
-			if (routeCells.TryToGetValue(routeCellsIndex, out targetCell))
-			{
-				var turnDirection = Robot.GetTurnDirection(targetCell.GridPosition);
+			//if (routeCells.TryToGetValue(routeCellsIndex, out targetCell))
+			//{
+			//	var turnDirection = Robot.GetTurnDirection(targetCell.GridPosition);
 
-				if (turnDirection == TurnDirection.Stay)
-				{
-					StartMove();
+			//	if (turnDirection == TurnDirection.Stay)
+			//	{
+			//		StartMove();
 
-					return;
-				}
+			//		return;
+			//	}
 
-				if (turnDirection == TurnDirection.Left)
-				{
-					TurnLeft();
+			//	if (turnDirection == TurnDirection.Left)
+			//	{
+			//		TurnLeft();
 
-					return;
-				}
+			//		return;
+			//	}
 
-				if (turnDirection == TurnDirection.Right)
-				{
-					TurnRight();
+			//	if (turnDirection == TurnDirection.Right)
+			//	{
+			//		TurnRight();
 
-					return;
-				}
-			}
+			//		return;
+			//	}
+			//}
 
-			DebugHelper.PrettyPrintVerbose($"Invalid cellindex: {routeCellsIndex}", ConsoleColor.Red);
+			//DebugHelper.PrettyPrintVerbose($"Invalid cellindex: {routeCellsIndex}", ConsoleColor.Red);
 
 			FinishState();
 		}
 
 		protected virtual void StartMove()
 		{
-			accelerating = true;
+			//accelerating = true;
 
-			int checkPointIndex = routeCellsIndex;
+			//int checkPointIndex = routeCellsIndex;
 
-			DebugHelper.PrettyPrintVerbose($"Robot orientation: {Robot.Orientation}", ConsoleColor.DarkGray);
+			//DebugHelper.PrettyPrintVerbose($"Robot orientation: {Robot.Orientation}", ConsoleColor.DarkGray);
 
-			SetNextCheckpointIndex(checkPointIndex);
+			//SetNextCheckpointIndex(checkPointIndex);
 
-			nextPointGridDistance = nextCheckPointIndex - routeCellsIndex;
+			//nextPointGridDistance = nextCheckPointIndex - routeCellsIndex;
 
-			DebugHelper.PrettyPrintVerbose($"NextCheckpointIndex: {nextCheckPointIndex}", ConsoleColor.DarkGray);
+			//DebugHelper.PrettyPrintVerbose($"NextCheckpointIndex: {nextCheckPointIndex}", ConsoleColor.DarkGray);
 
-			DebugHelper.PrettyPrintVerbose($"NextCheckpoint grid distance: {nextCheckPointIndex}", ConsoleColor.DarkGray);
+			//DebugHelper.PrettyPrintVerbose($"NextCheckpoint grid distance: {nextCheckPointIndex}", ConsoleColor.DarkGray);
 
 
-			if (routeCells.TryToGetValue(routeCellsIndex, out TileCell targetCell))
-			{
-				DebugHelper.PrettyPrintVerbose($"Target gridPosition: {targetCell.GridPosition}", ConsoleColor.DarkGray);
+			//if (routeCells.TryToGetValue(routeCellsIndex, out TileCell targetCell))
+			//{
+			//	DebugHelper.PrettyPrintVerbose($"Target gridPosition: {targetCell.GridPosition}", ConsoleColor.DarkGray);
 
-				MoveToCell(targetCell, Tween.TransitionType.Cubic, Tween.EaseType.InOut, Robot.MoveDuration, true);
-			}
+			//	MoveToCell(targetCell, Tween.TransitionType.Cubic, Tween.EaseType.InOut, Robot.MoveDuration, true);
+			//}
 
 		}
 
 		protected int SetNextCheckpointIndex(int currentCheckPointIndex)
 		{
-			if (Robot.Orientation == WorldOrientation.SouthWest || Robot.Orientation == WorldOrientation.NorthEast)
-			{
-				var xCoord = (int)routeCells[currentCheckPointIndex].GridPosition.x;
+			//if (Robot.Orientation == WorldOrientation.SouthWest || Robot.Orientation == WorldOrientation.NorthEast)
+			//{
+			//	var xCoord = (int)routeCells[currentCheckPointIndex].GridPosition.x;
 
-				while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.x == xCoord)
-				{
-					currentCheckPointIndex++;
-				}
+			//	while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.x == xCoord)
+			//	{
+			//		currentCheckPointIndex++;
+			//	}
 
-				nextCheckPointIndex = currentCheckPointIndex;
-			}
-			else
-			{
-				var yCoord = (int)routeCells[currentCheckPointIndex].GridPosition.y;
+			//	nextCheckPointIndex = currentCheckPointIndex;
+			//}
+			//else
+			//{
+			//	var yCoord = (int)routeCells[currentCheckPointIndex].GridPosition.y;
 
-				while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.y == yCoord)
-				{
-					currentCheckPointIndex++;
-				}
+			//	while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.y == yCoord)
+			//	{
+			//		currentCheckPointIndex++;
+			//	}
 
-				nextCheckPointIndex = currentCheckPointIndex;
-			}
+			//	nextCheckPointIndex = currentCheckPointIndex;
+			//}
 
 			return nextCheckPointIndex;
 		}
@@ -346,52 +346,52 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 		protected virtual bool MoveToCell(TileCell targetCell, Tween.TransitionType transitionType, Tween.EaseType easeType, float duration, bool withSound)
 		{
-			if (!Robot.ValidateMotionDirection(targetCell))
-			{
-				DebugHelper.PrettyPrintVerbose($"{Robot.Name}: Invalid target detected: {targetCell}", ConsoleColor.Red);
+			//if (!Robot.ValidateMotionDirection(targetCell))
+			//{
+			//	DebugHelper.PrettyPrintVerbose($"{Robot.Name}: Invalid target detected: {targetCell}", ConsoleColor.Red);
 
-				checkPointReached = true;
+			//	checkPointReached = true;
 
-				return false;
-			}
+			//	return false;
+			//}
 
-			Robot.TweenController.StopTweens();
+			//Robot.TweenController.StopTweens();
 
-			var targetPosition = targetCell.WorldPositionOfCenter;
+			//var targetPosition = targetCell.WorldPositionOfCenter;
 
-			var interpolationParams = new InterpolateParams()
-			{
-				Subject = Robot,
+			//var interpolationParams = new InterpolateParams()
+			//{
+			//	Subject = Robot,
 
-				Property = GodotProperties.position.ToString(),
+			//	Property = GodotProperties.position.ToString(),
 
-				InitialValue = Robot.Position,
+			//	InitialValue = Robot.Position,
 
-				FinalValue = targetPosition,
+			//	FinalValue = targetPosition,
 
-				TransitionType = transitionType,
+			//	TransitionType = transitionType,
 
-				Duration = duration,
+			//	Duration = duration,
 
-				EaseType = easeType,
+			//	EaseType = easeType,
 
-				Delay = 0
-			};
+			//	Delay = 0
+			//};
 
-			Robot.TweenProperty(interpolationParams);
+			//Robot.TweenProperty(interpolationParams);
 
-			if (withSound) Robot.SoundController.PlaySoundEffect(SoundController.MOVE_SOUND);
+			//if (withSound) Robot.SoundController.PlaySoundEffect(SoundController.MOVE_SOUND);
 
 			return true;
 		}
 
 		private void FinishState()
 		{
-			DebugHelper.PrettyPrintVerbose($"{Robot.RobotName}: SmartMove finished..", ConsoleColor.DarkGray);
+			//DebugHelper.PrettyPrintVerbose($"{Robot.RobotName}: SmartMove finished..", ConsoleColor.DarkGray);
 
-			Reset();
+			//Reset();
 
-			OnStateFinished(new StateFinishedEventArgs() { NextState = StateEnum.Idle, Input = CommandKey.None });
+			//OnStateFinished(new StateFinishedEventArgs() { NextState = StateEnum.Idle, Input = CommandKey.None });
 		}
 	}
 }
