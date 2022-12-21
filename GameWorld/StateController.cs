@@ -42,9 +42,21 @@ namespace ALAN13featurepack.GameWorld
 
         public Dictionary<StateEnum, ICharacterState> StateDictionary { get; set; }
 
-        public StateController()
+        public StateController(GameCharacter subject, List<Timer> timers)
         {
             StateDictionary = new Dictionary<StateEnum, ICharacterState>();
+
+            InputQueue = new Queue<CommandKey>();
+
+            StateDictionary = new Dictionary<StateEnum, ICharacterState>();
+
+            StateDictionary.Add(StateEnum.Move, new MoveState(parent, State_StateFinished));
+
+            stateEventTimer = timers.First();
+
+            CommandTimer = timers.Last();
+
+            parent = subject;
         }
 
         public void IssueCommand(CommandKey input, object caller)
@@ -97,6 +109,52 @@ namespace ALAN13featurepack.GameWorld
             else
             {
                 DebugHelper.Print($"Input queue is full, input: {input} will not be executed.");
+            }
+        }
+
+        public void State_StateFinished(object sender, StateFinishedEventArgs e)
+        {
+            DebugHelper.PrettyPrintVerbose($"{parent.CharacterName} Changing State - from:{currentState.CurrentState} to:{e.NextState}", ConsoleColor.DarkYellow);
+
+            SwitchState(e);
+        }
+
+        public void SwitchState(StateFinishedEventArgs e)
+        {
+            var previousState = currentState.CurrentState;
+
+            currentState.Active = false;
+            currentState = StateDictionary[e.NextState];
+            currentState.Active = true;
+
+            AnimationFinishedAction = currentState.AnimationFinishedHandler;
+
+            TweenFinishedAction = currentState.TweenFinishedHandler;
+
+            EventTimerTimedOutAction = currentState.EventTimerTimedOutHandler;
+
+            var cfe = new CommandFinishedEventArgs()
+            {
+                PreviousState = previousState,
+                NewState = e.NextState,
+                CommandID = commandID++,
+                Handled = false
+            };
+
+            DebugHelper.PrettyPrintVerbose($"{parent.CharacterName}: New state: {e.NextState}", ConsoleColor.DarkYellow);
+
+            if (e.NextState == StateEnum.Idle)
+            {
+                parent.OnCommandFinished(cfe);
+
+                return;
+            }
+
+            if (e.Input != CommandKey.Skip)
+            {
+                IssueCommand(e.Input, this);
+
+                return;
             }
         }
     }
