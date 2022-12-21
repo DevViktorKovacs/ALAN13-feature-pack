@@ -25,6 +25,8 @@ public class LevelController : Node2D, ILevel
 	[Export]
 	public Vector2 MaxZoomInRate = new Vector2(0.9f, 0.9f);
 
+	public Vector2 CharacterStartingCellPosition = new Vector2(9, 0);
+
 	public TileGridControl TileGridControl => tileGrid;
 
 	public string AssetName { get; internal set; }
@@ -32,6 +34,8 @@ public class LevelController : Node2D, ILevel
 	TileGridControl tileGrid;
 
 	TileCell activeCell;
+
+	GameCharacter character;
 
 	Vector2 startingVector = new Vector2();
 
@@ -62,6 +66,10 @@ public class LevelController : Node2D, ILevel
 		this.InputProcessor().MousePanned += LevelController_MousePanned;
 
 		this.InputProcessor().KeyPressed += LevelController_KeyPressed;
+
+		character = objects.GetChild<GameCharacter>();
+
+		tileGrid.InitializeCharacter(character, tileGrid.GetCellAt(CharacterStartingCellPosition));
 
 	}
 

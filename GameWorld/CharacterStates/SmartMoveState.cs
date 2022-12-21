@@ -136,42 +136,42 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 		protected virtual void Robot_EnteringTileCell(object sender, EnteringCellEventArgs e)
 		{
-			//DebugHelper.PrettyPrintVerbose($"{Subject.Name}: entering new cell {e.NewCell.GridPosition}", ConsoleColor.DarkGray);
+			DebugHelper.PrettyPrintVerbose($"{Subject.Name}: entering new cell {e.NewCell.GridPosition}", ConsoleColor.DarkGray);
 
-			//routeCellsIndex++;
+			routeCellsIndex++;
 
-			//if (interruptionRequested)
-			//{
-			//	Decelerate();
+			if (interruptionRequested)
+			{
+				Decelerate();
 
-			//	checkPointReached = true;
+				checkPointReached = true;
 
-			//	return;
-			//}
+				return;
+			}
 
-			//if (accelerating
-			//	&& routeCells.TryToGetValue(nextCheckPointIndex, out TileCell result)
-			//	&& e.NewCell != result
-			//	&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result2)
-			//	&& e.NewCell != result2)
-			//{
-			//	accelerating = false;
+			if (accelerating
+				&& routeCells.TryToGetValue(nextCheckPointIndex, out TileCell result)
+				&& e.NewCell != result
+				&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result2)
+				&& e.NewCell != result2)
+				{
+					accelerating = false;
 
-			//	MoveToCell(routeCells[nextCheckPointIndex], Tween.TransitionType.Linear, Tween.EaseType.Out, Math.Abs(Robot.MoveDuration * 0.25f * nextPointGridDistance), false);
+					MoveToCell(routeCells[nextCheckPointIndex], Tween.TransitionType.Linear, Tween.EaseType.Out, Math.Abs(Subject.MoveDuration * 0.25f * nextPointGridDistance), false);
 
-			//	return;
-			//}
+					return;
+				}
 
-			//if (routeCells.Count > 1
-			//	&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result3)
-			//	&& e.NewCell == result3)
-			//{
-			//	Decelerate();
+			if (routeCells.Count > 1
+				&& routeCells.TryToGetValue(nextCheckPointIndex - 1, out TileCell result3)
+				&& e.NewCell == result3)
+			{
+				Decelerate();
 
-			//	return;
-			//}
+				return;
+			}
 
-			//checkPointReached = true;
+			checkPointReached = true;
 
 			return;
 		}

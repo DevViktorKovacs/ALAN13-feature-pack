@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Ground.tres" type="TileSet" id=1]
 [ext_resource path="res://GameWorld/LevelController.cs" type="Script" id=2]
 [ext_resource path="res://Shadows.tres" type="TileSet" id=3]
 [ext_resource path="res://Objects.tres" type="TileSet" id=4]
+[ext_resource path="res://GameWorld/GameCharacter.tscn" type="PackedScene" id=5]
 
 [node name="LevelController" type="Node2D"]
 scale = Vector2( 0.5, 0.5 )
@@ -35,6 +36,10 @@ mode = 1
 tile_set = ExtResource( 4 )
 cell_size = Vector2( 279, 140 )
 cell_quadrant_size = 36
+cell_y_sort = true
 centered_textures = true
 format = 1
 tile_data = PoolIntArray( -262144, 0, 0, -131072, 0, 0, -65530, 0, 0, -65527, 1, 0, 65535, 2, 0, 65539, 1, 0 )
+
+[node name="GameCharacter" parent="Objects" instance=ExtResource( 5 )]
+position = Vector2( 838, 494 )

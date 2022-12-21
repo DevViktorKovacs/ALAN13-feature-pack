@@ -110,6 +110,11 @@ namespace ALAN13featurepack.GameWorld
 			return objects.GetCellCenterWorldPosition(gridPosition);
 		}
 
+		public void InitializeCharacter(GameCharacter gameCharacter, TileCell startingCell)
+		{ 
+			  gameCharacter.Position = startingCell.WorldPositionOfCenter;
+        }
+
 		private void InitializeCells()
 		{
 			DebugHelper.Print("Initializing TileMap...");

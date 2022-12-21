@@ -48,5 +48,10 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
         {
             NextState = DefaultNextState;
         }
+
+        public virtual void OnStateFinished(StateFinishedEventArgs e)
+        {
+            StateFinished?.Invoke(this, e);
+        }
     }
 }

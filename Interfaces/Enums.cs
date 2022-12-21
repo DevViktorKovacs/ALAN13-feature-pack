@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ALAN13featurepack.Interfaces
+﻿namespace ALAN13featurepack.Interfaces
 {
     public enum GroundType
     {
@@ -88,6 +82,21 @@ namespace ALAN13featurepack.Interfaces
         Move = 1,
         Dead = 8,
         SmartMove = 19,
+    }
+
+    public enum GodotProperties
+    {
+        position = 0,
+        modulate = 1,
+        rect_position = 2,
+        button_up = 3,
+        item_selected = 4,
+        body_entered = 5,
+        body_exited = 6,
+        timeout = 7,
+        tween_all_completed = 8,
+        remove_child = 9,
+        add_child = 10,
     }
 
     public enum AnimationKeys
