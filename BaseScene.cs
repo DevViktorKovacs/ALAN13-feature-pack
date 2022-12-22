@@ -9,6 +9,8 @@ public class BaseScene : Node2D
 
 	LevelController currentLevel;
 
+	SteamManager steamManager;
+
 	string loadingAssetname;
 
 	public override void _Ready()
@@ -24,6 +26,26 @@ public class BaseScene : Node2D
 		loader.LoadAsset(pathToLevel, AssetKeys.FirstLevel.ToString(), 10);
 
 		InputProcessor.VerboseLogging = true;
+
+		DebugHelper.PrettyPrintVerbose($"Initializing Steam API...");
+
+		steamManager = new SteamManager();
+
+		try
+		{
+			var success = steamManager.Init();
+
+			InputProcessor.IsSteamInitialized = success;
+
+			steamManager.Update();
+		}
+
+		catch (Exception e)
+		{
+			DebugHelper.PrintError($"Steam dll not found. Include steam_api64.dll in the root directory for steamworks integration!");
+
+			DebugHelper.PrintError($"Error details: {e}");
+		}
 	}
 
 	private void Loader_LoadingFinished(object sender, LoadingFinishedEventArgs e)

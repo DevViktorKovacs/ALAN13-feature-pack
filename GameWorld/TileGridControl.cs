@@ -285,8 +285,6 @@ namespace ALAN13featurepack.GameWorld
 
 			sprite.Position = position;
 
-			sprite.ZIndex++;
-
 			instance.RemoveChild(sprite);
 
 			instance.Free();
