@@ -9,7 +9,7 @@ namespace ALAN13featurepack.GameWorld
     {
 		public TileCell SelectedCell { get; set; }
 
-		public CustomAStar AStar2D { get; set; }
+		public IPathFinder AStar2D { get; set; }
 
 		public TileMap[] Layers => new TileMap[] { ground, shadows, objects };
 		public int ID => id;
@@ -117,6 +117,8 @@ namespace ALAN13featurepack.GameWorld
 			gameCharacter.TileWorld = this;
 
 			gameCharacter.CharacterName = "Player";
+
+			GenerateAstar(true);
         }
 
 		private void InitializeCells()
@@ -232,7 +234,6 @@ namespace ALAN13featurepack.GameWorld
 
 		public void ShiftMap(Vector2 shift)
 		{
-
 			ground.Position += shift;
 
 			float x = ground.Position.x;
@@ -295,7 +296,18 @@ namespace ALAN13featurepack.GameWorld
 			tileCellSelection = sprite;
 		}
 
-		public TileCell SelectCell()
+        public TileCell GetCellByAStarId(int id)
+        {
+            var x = (int)Math.Floor(id / 100f);
+            var y = id - (x * 100);
+
+            if (cells.TryToGetValue(x, y, out TileCell result))
+                return result;
+
+            return default;
+        }
+
+        public TileCell SelectCell()
 		{
 			var worldPosition = shadows.GetLocalMousePosition();
 
@@ -341,5 +353,59 @@ namespace ALAN13featurepack.GameWorld
 		{
 			return shadows.GetLocalMousePosition();
 		}
-	}
+
+        public IPathFinder GenerateAstar(bool withNewPathFinder = false)
+        {
+            IPathFinder result;
+
+            if (withNewPathFinder)
+            {
+                result = new AlanStar();
+            }
+            else
+            {
+                result = new CustomAStar();
+            }
+
+            InitPathFinder(result);
+
+            AStar2D = result;
+
+            return result;
+        }
+
+        private void InitPathFinder(IPathFinder pathFinder)
+        {
+            IterateThroughCells((coords) =>
+            {
+                var currentCell = cells[coords.x, coords.y];
+
+                pathFinder.AddPoint(currentCell.AStarId, currentCell.GridPosition);
+            });
+
+            IterateThroughCells((coords) =>
+            {
+                TryToCreateConnection(coords, pathFinder);
+            });
+        }
+
+        private void TryToCreateConnection(IntVector2 coords, IPathFinder result)
+        {
+            var currentCell = cells[coords.x, coords.y];
+
+            if (currentCell.Occupant != Occupant.Walkable) return;
+
+            for (int i = 0; i < ConnectedNeigbourVectors.Length; i++)
+            {
+                var neigbourGridCoords = currentCell.GridPosition + ConnectedNeigbourVectors[i];
+
+                var neighbour = GetCellAt(neigbourGridCoords);
+
+                if (neighbour.Occupant == Occupant.Walkable && !result.ArePointsConnected(currentCell.AStarId, neighbour.AStarId))
+                {
+                    result.ConnectPoints(currentCell.AStarId, neighbour.AStarId);
+                }
+            }
+        }
+    }
 }

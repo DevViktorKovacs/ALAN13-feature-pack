@@ -15,17 +15,18 @@ namespace ALAN13featurepack.Utility
 
         public static void NewLine()
         {
-            System.Console.WriteLine(string.Empty);
+            Console.WriteLine(string.Empty);
         }
 
         public static void PrettyPrint(string message, ConsoleColor consoleColor)
         {
-            var defaultColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = consoleColor;
+            var defaultColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = consoleColor;
 
 
-            System.Console.Write(System.Environment.NewLine + message);
-            System.Console.ForegroundColor = defaultColor;
+            Console.Write(System.Environment.NewLine + message);
+            Console.ForegroundColor = defaultColor;
         }
 
         public static void PrettyPrintVerbose(object message, ConsoleColor consoleColor = ConsoleColor.White)
@@ -38,12 +39,13 @@ namespace ALAN13featurepack.Utility
 
         public static void UpdatePrint(string message, ConsoleColor color = ConsoleColor.DarkGray)
         {
-            var defaultColor = System.Console.ForegroundColor;
-            System.Console.ForegroundColor = color;
+            var defaultColor = Console.ForegroundColor;
 
-            System.Console.Write($"\r                                                                                         ");
-            System.Console.Write($"\r{message}");
-            System.Console.ForegroundColor = defaultColor;
+            Console.ForegroundColor = color;
+
+            Console.Write($"\r                                                                                         ");
+            Console.Write($"\r{message}");
+            Console.ForegroundColor = defaultColor;
         }
 
         public static void PrettyPrint(object message, ConsoleColor consoleColor)
@@ -55,6 +57,7 @@ namespace ALAN13featurepack.Utility
         {
 
             StackTrace stackTrace = new StackTrace();
+
             StackFrame[] stackFrames = stackTrace.GetFrames();
 
             foreach (StackFrame stackFrame in stackFrames)
@@ -66,6 +69,7 @@ namespace ALAN13featurepack.Utility
         public static void LogStep()
         {
             StackTrace stackTrace = new StackTrace();
+
             StackFrame[] stackFrames = stackTrace.GetFrames();
 
             var lastCall = stackFrames[1].GetMethod();

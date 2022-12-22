@@ -5,8 +5,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ALAN13featurepack.GameWorld
 {
@@ -16,7 +14,7 @@ namespace ALAN13featurepack.GameWorld
 
         protected int commandID = 0;
 
-        protected float commandDuration = 0.85f;
+        protected float commandDuration = 0.5f;
 
         protected bool commandTimerIsRunning = false;
 
@@ -40,6 +38,8 @@ namespace ALAN13featurepack.GameWorld
 
         static List<StateEnum> immidiateStates = new List<StateEnum>() { };
 
+        static List<StateEnum> timeConsumingStates = new List<StateEnum>() { StateEnum.Move, StateEnum.Turn };
+
         public Dictionary<StateEnum, ICharacterState> StateDictionary { get; set; }
 
         public StateController(GameCharacter subject, List<Timer> timers)
@@ -53,8 +53,9 @@ namespace ALAN13featurepack.GameWorld
             StateDictionary = new Dictionary<StateEnum, ICharacterState>();
 
             StateDictionary.Add(StateEnum.Idle, new IdleState(parent, State_StateFinished));
-
             StateDictionary.Add(StateEnum.Move, new MoveState(parent, State_StateFinished));
+            StateDictionary.Add(StateEnum.Turn, new TurnState(parent, State_StateFinished));
+            StateDictionary.Add(StateEnum.SmartMove, new SmartMoveState(parent, State_StateFinished));
 
             currentState = StateDictionary[StateEnum.Idle];
 
@@ -87,14 +88,14 @@ namespace ALAN13featurepack.GameWorld
 
         private void InvokeCommand(CommandKey input)
         {
-            //if (parent.ProgramExecutionMode && timeConsumingStates.Contains(currentRobotState.CurrentState))
-            //{
-            //    CommandTimer.WaitTime = commandDuration / parent.AnimationSpeed;
+            if (timeConsumingStates.Contains(currentState.CurrentState))
+            {
+                CommandTimer.WaitTime = commandDuration / parent.AnimationSpeed;
 
-            //    CommandTimer.Start();
+                CommandTimer.Start();
 
-            //    commandTimerIsRunning = true;
-            //}
+                commandTimerIsRunning = true;
+            }
 
             currentState.Invoke(input);
         }
@@ -110,11 +111,11 @@ namespace ALAN13featurepack.GameWorld
             {
                 InputQueue.Enqueue(input);
 
-                DebugHelper.Print($"Input: {input} is queued.");
+                DebugHelper.PrettyPrintVerbose($"Input: {input} is queued.");
             }
             else
             {
-                DebugHelper.Print($"Input queue is full, input: {input} will not be executed.");
+                DebugHelper.PrettyPrintVerbose($"Input queue is full, input: {input} will not be executed.");
             }
         }
 
@@ -168,6 +169,21 @@ namespace ALAN13featurepack.GameWorld
             var e = new StateFinishedEventArgs() { Input = CommandKey.Skip, NextState = nextState };
 
             SwitchState(e);
+        }
+
+        public void OnStateEventTimertimeout()
+        {
+            EventTimerTimedOutAction?.Invoke(parent, new EventArgs());
+        }
+
+        public void OnCommandTimerTimedOut()
+        {
+            commandTimerIsRunning = false;
+
+            if (InputQueue.Count > 0)
+            {
+                InvokeCommand(InputQueue.Dequeue());
+            }
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Godot;
+﻿using ALAN13featurepack.Interfaces;
+using Godot;
 using System;
 
 namespace ALAN13featurepack.Utility
 {
-    public class CustomAStar : AStar2D
+    public class CustomAStar : AStar2D, IPathFinder
     {
         public override float _ComputeCost(int fromId, int toId)
         {

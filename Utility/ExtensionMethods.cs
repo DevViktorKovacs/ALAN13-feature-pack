@@ -482,26 +482,26 @@ namespace ALAN13featurepack.Utility
         {
             return tween.InterpolateProperty(interpolateParams.Subject, interpolateParams.Property, interpolateParams.InitialValue, interpolateParams.FinalValue, interpolateParams.Duration, interpolateParams.TransitionType, interpolateParams.EaseType, interpolateParams.Delay);
         }
-
-        public struct InterpolateParams
-        {
-            public Godot.Object Subject;
-
-            public NodePath Property;
-
-            public object InitialValue;
-
-            public object FinalValue;
-
-            public float Duration;
-
-            public TransitionType TransitionType;
-
-            public EaseType EaseType;
-
-            public float Delay;
-        }
     }
 
     public struct IntVector2 { public int x, y; }
+
+    public struct InterpolateParams
+    {
+        public Godot.Object Subject;
+
+        public NodePath Property;
+
+        public object InitialValue;
+
+        public object FinalValue;
+
+        public float Duration;
+
+        public TransitionType TransitionType;
+
+        public EaseType EaseType;
+
+        public float Delay;
+    }
 }

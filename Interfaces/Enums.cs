@@ -100,6 +100,13 @@
         add_child = 10,
     }
 
+    public enum TurnDirection
+    {
+        Stay = 0,
+        Right = 1,
+        Left = 2
+    }
+
     public enum AnimationKeys
     {
         Default = 0,

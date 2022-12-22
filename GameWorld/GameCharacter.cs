@@ -37,6 +37,8 @@ public class GameCharacter : KinematicBody2D
 
 	public float MoveDuration => moveDuration;
 
+	public float AnimationSpeed => animationSpeed;
+
 	public Vector2 Direction = new Vector2(1, 0);
 
 	public WorldOrientation Orientation = WorldOrientation.SouthEast;
@@ -47,7 +49,7 @@ public class GameCharacter : KinematicBody2D
 
 	protected AnimationFactory animationFactory = new AnimationFactory();
 
-	protected float moveDuration = 1f;
+	protected float moveDuration = 0.85f;
 
 	protected float animationSpeed = 1;
 
@@ -130,7 +132,12 @@ public class GameCharacter : KinematicBody2D
 		CommandFinished?.Invoke(this, e);
 	}
 
-	public virtual long PlayOrientationSpecificAnimation(string animationName, WorldOrientation orientation, bool backwards = false)
+    public long PlayOrientationSpecificAnimation(string animationName)
+    {
+        return PlayOrientationSpecificAnimation(animationName, Orientation);
+    }
+
+    public virtual long PlayOrientationSpecificAnimation(string animationName, WorldOrientation orientation, bool backwards = false)
 	{
 		DebugHelper.PrettyPrintVerbose($"{CharacterName}: Playing animation {animationName}{orientation}", ConsoleColor.Green);
 
@@ -156,7 +163,92 @@ public class GameCharacter : KinematicBody2D
 	{
 		AnimatedSprite.Frame = 0;
 	}
-	private void _on_AnimatedSprite_animation_finished()
+
+    public override void _Process(float delta)
+    {
+        GetCurrentCell();
+
+        base._Process(delta);
+    }
+
+    public void UpdateDirection()
+    {
+        Direction = StaticData.OrientationData[Orientation];
+    }
+
+    public TurnDirection GetTurnDirection(Vector2 targetGridPosition)
+    {
+        var targetOrientation = CurrentCell.GetNeigbourDirection(targetGridPosition);
+
+        if (targetOrientation == Orientation) return TurnDirection.Stay;
+
+        if (Orientation == WorldOrientation.SouthEast)
+        {
+            if (targetOrientation == WorldOrientation.NorthEast)
+            {
+                return TurnDirection.Left;
+            }
+            else
+            {
+                return TurnDirection.Right;
+            }
+        }
+
+        if (Orientation == WorldOrientation.NorthEast)
+        {
+            if (targetOrientation == WorldOrientation.SouthEast)
+            {
+                return TurnDirection.Right;
+            }
+            else
+            {
+                return TurnDirection.Left;
+            }
+        }
+
+        if ((int)Orientation < (int)targetOrientation)
+        {
+            return TurnDirection.Right;
+        }
+        else
+        {
+            return TurnDirection.Left;
+        }
+    }
+
+    public bool ValidateMotionDirection(TileCell targetCell)
+    {
+        switch (Orientation)
+        {
+            case WorldOrientation.NorthEast:
+
+                return (targetCell.GridPosition.x == CurrentCell.GridPosition.x
+                    && targetCell.GridPosition.y < CurrentCell.GridPosition.y) ? true : false;
+
+            case WorldOrientation.SouthWest:
+                return (targetCell.GridPosition.x == CurrentCell.GridPosition.x
+                   && targetCell.GridPosition.y > CurrentCell.GridPosition.y) ? true : false;
+
+            case WorldOrientation.SouthEast:
+                return (targetCell.GridPosition.y == CurrentCell.GridPosition.y
+                   && targetCell.GridPosition.x > CurrentCell.GridPosition.x) ? true : false;
+
+            case WorldOrientation.NorthWest:
+                return (targetCell.GridPosition.y == CurrentCell.GridPosition.y
+                   && targetCell.GridPosition.x < CurrentCell.GridPosition.x) ? true : false;
+
+            default:
+                return false;
+
+        }
+    }
+
+    public virtual void TweenProperty(InterpolateParams interpolateParams)
+    {
+        TweenController.InterpolateProperty(interpolateParams);
+    }
+
+    private void _on_AnimatedSprite_animation_finished()
 	{
 		var currentAnimationName = AnimatedSprite.Animation;
 
@@ -182,12 +274,27 @@ public class GameCharacter : KinematicBody2D
 		StateController.AnimationFinishedAction?.Invoke(this, e);
 	}
 
-
 	private void _on_Tween_tween_all_completed()
 	{
 		StateController.TweenFinishedAction?.Invoke(this, new EventArgs());
 	}
+	
+	private void _on_CommandTimer_timeout()
+	{
+		StateController.OnCommandTimerTimedOut();
+	}
+
+    private void _on_StateTimer_timeout()
+    {
+        StateController.OnStateEventTimertimeout();
+    }
 }
+
+
+
+
+
+
 
 
 

@@ -68,6 +68,7 @@ namespace ALAN13featurepack.Utility
         public void InterpolateProperty(InterpolateParams interpolateParams)
         {
             tween.InterpolateProperty(interpolateParams);
+
             tween.Start();
         }
 
@@ -89,24 +90,24 @@ namespace ALAN13featurepack.Utility
 
         public TransitionType NextTransitionType()
         {
-            var currentTTInt = (int)TransitionType;
+            var currentTransitionTpyeInt = (int)TransitionType;
 
-            currentTTInt = (currentTTInt + 1) % 11;
+            currentTransitionTpyeInt = (currentTransitionTpyeInt + 1) % 11;
 
-            TransitionType = (TransitionType)currentTTInt;
+            TransitionType = (TransitionType)currentTransitionTpyeInt;
 
             return TransitionType;
         }
 
         public TransitionType PreviousTransitionType()
         {
-            var currentTTInt = (int)TransitionType;
+            var currentTransitionTpyeInt = (int)TransitionType;
 
-            currentTTInt--;
+            currentTransitionTpyeInt--;
 
-            if (currentTTInt < 0) currentTTInt = 10;
+            if (currentTransitionTpyeInt < 0) currentTransitionTpyeInt = 10;
 
-            TransitionType = (TransitionType)currentTTInt;
+            TransitionType = (TransitionType)currentTransitionTpyeInt;
 
             return TransitionType;
         }

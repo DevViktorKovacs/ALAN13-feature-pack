@@ -4,8 +4,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ALAN13featurepack.GameWorld.CharacterStates
 {
@@ -40,6 +38,8 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 			AnimationFinishedHandler = Parent_AnimationFinished;
 
 			Reset();
+
+			SubscribeToEvents();
 		}
 
 		public override void Reset()
@@ -178,76 +178,74 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 		private void Decelerate()
 		{
-			//if (accelerating) accelerating = false;
+			if (accelerating) accelerating = false;
 
-			//TileCell targetCell = routeCells.LastOrDefault();
+			TileCell targetCell = routeCells.LastOrDefault();
 
-			//if (routeCells.TryToGetValue(routeCellsIndex, out TileCell result))
-			//{
-			//	targetCell = result;
+			if (routeCells.TryToGetValue(routeCellsIndex, out TileCell result))
+			{
+				targetCell = result;
 
-			//	MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Robot.MoveDuration * 0.75f, false);
+				MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Subject.MoveDuration * 0.75f, false);
 
-			//	return;
-			//}
+				return;
+			}
 
-			//DebugHelper.PrintError($"{Subject.Name}: There is no cell at {routeCellsIndex} in routecells for SmartMoveState");
+			DebugHelper.PrintError($"{Subject.Name}: There is no cell at {routeCellsIndex} in routecells for SmartMoveState");
 
-			//MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Robot.MoveDuration * 0.75f, false);
+			MoveToCell(targetCell, Tween.TransitionType.Quad, Tween.EaseType.Out, Subject.MoveDuration * 0.75f, false);
 		}
 
 		public override void Invoke(CommandKey input)
 		{
-			//if (inProgress)
-			//{
-			//	interruptionRequested = true;
+			if (inProgress)
+			{
+				interruptionRequested = true;
 
-			//	newTarget = Robot.TileWorld.SelectedCell;
+				newTarget = Subject.TileWorld.SelectedCell;
 
-			//	DebugHelper.PrettyPrintVerbose($"InterruptionRequest recieved! New target: {newTarget}", ConsoleColor.DarkGray);
+				DebugHelper.PrettyPrintVerbose($"InterruptionRequest recieved! New target: {newTarget}", ConsoleColor.DarkGray);
 
-			//	return;
-			//}
+				return;
+			}
 
-			//if (CalculatePath(Robot.TileWorld.SelectedCell))
-			//{
-			//	inProgress = true;
+			if (CalculatePath(Subject.TileWorld.SelectedCell))
+			{
+				inProgress = true;
 
-			//	EvaluateNextMove();
-			//}
+				EvaluateNextMove();
+			}
 		}
 
 		protected bool CalculatePath(TileCell targetCell)
 		{
-			//checkPointReached = false;
+			checkPointReached = false;
 
-			//DebugHelper.PrettyPrintVerbose("Calculating path*...", ConsoleColor.DarkGray);
+			DebugHelper.PrettyPrintVerbose("Calculating path*...", ConsoleColor.DarkGray);
 
-			//var currentCell = Robot.GetCurrentCell();
+			var currentCell = Subject.GetCurrentCell();
 
-			//var list = Robot.TileWorld.AStar2D.GetIdPath(currentCell.AStarId, targetCell.AStarId);
+			var list = Subject.TileWorld.AStar2D.GetIdPath(currentCell.AStarId, targetCell.AStarId);
 
-			//if (list.Length == 0)
-			//{
-			//	DebugHelper.PrettyPrintVerbose("No avaible path found", ConsoleColor.DarkGray);
+			if (list.Length == 0)
+			{
+				DebugHelper.PrettyPrintVerbose("No avaible path found", ConsoleColor.DarkGray);
 
-			//	Robot.SoundController.PlaySoundEffect(SoundController.CHIRP_SOUND);
+				return false;
+			}
 
-			//	return false;
-			//}
+			routeCellsIndex = 1;
 
-			//routeCellsIndex = 1;
+			var cellList = list.ToList().Select(id => Subject.TileWorld.GetCellByAStarId(id));
 
-			//var cellList = list.ToList().Select(id => Robot.TileWorld.GetCellByAStarId(id));
+			routeCells = cellList.ToList();
 
-			//routeCells = cellList.ToList();
+			cellList.ToList().ForEach(cl =>
+			{
+				DebugHelper.PrettyPrintVerbose($"Path step:{cl}", ConsoleColor.DarkGray);
+			}
 
-			//cellList.ToList().ForEach(cl =>
-			//{
-			//	DebugHelper.PrettyPrintVerbose($"Path step:{ cl}", ConsoleColor.DarkGray);
-			//}
-
-			//);
+			);
 
 			return true;
 		}
@@ -258,87 +256,87 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 			DebugHelper.PrettyPrintVerbose("Evaluating next move...", ConsoleColor.DarkGray);
 
-			//if (routeCells.TryToGetValue(routeCellsIndex, out targetCell))
-			//{
-			//	var turnDirection = Robot.GetTurnDirection(targetCell.GridPosition);
+			if (routeCells.TryToGetValue(routeCellsIndex, out targetCell))
+			{
+				var turnDirection = Subject.GetTurnDirection(targetCell.GridPosition);
 
-			//	if (turnDirection == TurnDirection.Stay)
-			//	{
-			//		StartMove();
+				if (turnDirection == TurnDirection.Stay)
+				{
+					StartMove();
 
-			//		return;
-			//	}
+					return;
+				}
 
-			//	if (turnDirection == TurnDirection.Left)
-			//	{
-			//		TurnLeft();
+				if (turnDirection == TurnDirection.Left)
+				{
+					TurnLeft();
 
-			//		return;
-			//	}
+					return;
+				}
 
-			//	if (turnDirection == TurnDirection.Right)
-			//	{
-			//		TurnRight();
+				if (turnDirection == TurnDirection.Right)
+				{
+					TurnRight();
 
-			//		return;
-			//	}
-			//}
+					return;
+				}
+			}
 
-			//DebugHelper.PrettyPrintVerbose($"Invalid cellindex: {routeCellsIndex}", ConsoleColor.Red);
+			DebugHelper.PrettyPrintVerbose($"Invalid cellindex: {routeCellsIndex}", ConsoleColor.Red);
 
 			FinishState();
 		}
 
 		protected virtual void StartMove()
 		{
-			//accelerating = true;
+			accelerating = true;
 
-			//int checkPointIndex = routeCellsIndex;
+			int checkPointIndex = routeCellsIndex;
 
-			//DebugHelper.PrettyPrintVerbose($"Robot orientation: {Robot.Orientation}", ConsoleColor.DarkGray);
+			DebugHelper.PrettyPrintVerbose($"Robot orientation: {Subject.Orientation}", ConsoleColor.DarkGray);
 
-			//SetNextCheckpointIndex(checkPointIndex);
+			SetNextCheckpointIndex(checkPointIndex);
 
-			//nextPointGridDistance = nextCheckPointIndex - routeCellsIndex;
+			nextPointGridDistance = nextCheckPointIndex - routeCellsIndex;
 
-			//DebugHelper.PrettyPrintVerbose($"NextCheckpointIndex: {nextCheckPointIndex}", ConsoleColor.DarkGray);
+			DebugHelper.PrettyPrintVerbose($"NextCheckpointIndex: {nextCheckPointIndex}", ConsoleColor.DarkGray);
 
-			//DebugHelper.PrettyPrintVerbose($"NextCheckpoint grid distance: {nextCheckPointIndex}", ConsoleColor.DarkGray);
+			DebugHelper.PrettyPrintVerbose($"NextCheckpoint grid distance: {nextCheckPointIndex}", ConsoleColor.DarkGray);
 
 
-			//if (routeCells.TryToGetValue(routeCellsIndex, out TileCell targetCell))
-			//{
-			//	DebugHelper.PrettyPrintVerbose($"Target gridPosition: {targetCell.GridPosition}", ConsoleColor.DarkGray);
+			if (routeCells.TryToGetValue(routeCellsIndex, out TileCell targetCell))
+			{
+				DebugHelper.PrettyPrintVerbose($"Target gridPosition: {targetCell.GridPosition}", ConsoleColor.DarkGray);
 
-			//	MoveToCell(targetCell, Tween.TransitionType.Cubic, Tween.EaseType.InOut, Robot.MoveDuration, true);
-			//}
+				MoveToCell(targetCell, Tween.TransitionType.Cubic, Tween.EaseType.InOut, Subject.MoveDuration, true);
+			}
 
 		}
 
 		protected int SetNextCheckpointIndex(int currentCheckPointIndex)
 		{
-			//if (Robot.Orientation == WorldOrientation.SouthWest || Robot.Orientation == WorldOrientation.NorthEast)
-			//{
-			//	var xCoord = (int)routeCells[currentCheckPointIndex].GridPosition.x;
+			if (Subject.Orientation == WorldOrientation.SouthWest || Subject.Orientation == WorldOrientation.NorthEast)
+			{
+				var xCoord = (int)routeCells[currentCheckPointIndex].GridPosition.x;
 
-			//	while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.x == xCoord)
-			//	{
-			//		currentCheckPointIndex++;
-			//	}
+				while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.x == xCoord)
+				{
+					currentCheckPointIndex++;
+				}
 
-			//	nextCheckPointIndex = currentCheckPointIndex;
-			//}
-			//else
-			//{
-			//	var yCoord = (int)routeCells[currentCheckPointIndex].GridPosition.y;
+				nextCheckPointIndex = currentCheckPointIndex;
+			}
+			else
+			{
+				var yCoord = (int)routeCells[currentCheckPointIndex].GridPosition.y;
 
-			//	while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.y == yCoord)
-			//	{
-			//		currentCheckPointIndex++;
-			//	}
+				while (routeCells.TryToGetValue(currentCheckPointIndex + 1, out TileCell result) && (int)result.GridPosition.y == yCoord)
+				{
+					currentCheckPointIndex++;
+				}
 
-			//	nextCheckPointIndex = currentCheckPointIndex;
-			//}
+				nextCheckPointIndex = currentCheckPointIndex;
+			}
 
 			return nextCheckPointIndex;
 		}
@@ -346,52 +344,68 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
 		protected virtual bool MoveToCell(TileCell targetCell, Tween.TransitionType transitionType, Tween.EaseType easeType, float duration, bool withSound)
 		{
-			//if (!Robot.ValidateMotionDirection(targetCell))
-			//{
-			//	DebugHelper.PrettyPrintVerbose($"{Robot.Name}: Invalid target detected: {targetCell}", ConsoleColor.Red);
+			if (!Subject.ValidateMotionDirection(targetCell))
+			{
+				DebugHelper.PrettyPrintVerbose($"{Subject.CharacterName}: Invalid target detected: {targetCell}", ConsoleColor.Red);
 
-			//	checkPointReached = true;
+				checkPointReached = true;
 
-			//	return false;
-			//}
+				return false;
+			}
 
-			//Robot.TweenController.StopTweens();
+            Subject.TweenController.StopTweens();
 
-			//var targetPosition = targetCell.WorldPositionOfCenter;
+			var targetPosition = targetCell.WorldPositionOfCenter;
 
-			//var interpolationParams = new InterpolateParams()
-			//{
-			//	Subject = Robot,
+			var interpolationParams = new InterpolateParams()
+			{
+				Subject = Subject,
 
-			//	Property = GodotProperties.position.ToString(),
+				Property = GodotProperties.position.ToString(),
 
-			//	InitialValue = Robot.Position,
+				InitialValue = Subject.Position,
 
-			//	FinalValue = targetPosition,
+				FinalValue = targetPosition,
 
-			//	TransitionType = transitionType,
+				TransitionType = transitionType,
 
-			//	Duration = duration,
+				Duration = duration,
 
-			//	EaseType = easeType,
+				EaseType = easeType,
 
-			//	Delay = 0
-			//};
+				Delay = 0
+			};
 
-			//Robot.TweenProperty(interpolationParams);
-
-			//if (withSound) Robot.SoundController.PlaySoundEffect(SoundController.MOVE_SOUND);
+			Subject.TweenProperty(interpolationParams);
 
 			return true;
 		}
 
 		private void FinishState()
 		{
-			//DebugHelper.PrettyPrintVerbose($"{Robot.RobotName}: SmartMove finished..", ConsoleColor.DarkGray);
+			DebugHelper.PrettyPrintVerbose($"{Subject.CharacterName}: SmartMove finished..", ConsoleColor.DarkGray);
 
-			//Reset();
+			Reset();
 
-			//OnStateFinished(new StateFinishedEventArgs() { NextState = StateEnum.Idle, Input = CommandKey.None });
+			OnStateFinished(new StateFinishedEventArgs() { NextState = StateEnum.Idle, Input = CommandKey.None });
 		}
-	}
+
+        protected void TurnLeft()
+        {
+            Subject.PlayOrientationSpecificAnimation(StaticData.AnimationData[AnimationKeys.TurnLeft]);
+
+            Subject.Orientation = StaticData.TurnOrientationLeft(Subject.Orientation);
+
+            Subject.UpdateDirection();
+        }
+
+        protected void TurnRight()
+        {
+            Subject.PlayOrientationSpecificAnimation(StaticData.AnimationData[AnimationKeys.TurnRight]);
+
+            Subject.Orientation = StaticData.TurnOrientationRight(Subject.Orientation);
+
+            Subject.UpdateDirection();
+        }
+    }
 }

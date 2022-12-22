@@ -1,5 +1,6 @@
 ﻿using ALAN13featurepack.GameWorld;
 using ALAN13featurepack.Interfaces;
+using ALAN13featurepack.Utility;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -144,6 +145,27 @@ namespace ALAN13featurepack
                 default:
                     return AnimationKeys.SouthWest;
             }
+        }
+
+        public static WorldOrientation TurnOrientationLeft(WorldOrientation orientation)
+        {
+            int idx = ((int)orientation - 1).Modulo(4);
+
+            return (WorldOrientation)idx;
+        }
+
+        public static WorldOrientation TurnOrientationRight(WorldOrientation orientation)
+        {
+            int idx = ((int)orientation + 1) % 4;
+
+            return (WorldOrientation)idx;
+        }
+
+        public static WorldOrientation TurnOrienationAround(WorldOrientation orientation)
+        {
+            int idx = ((int)(orientation) + 2) % 4;
+
+            return (WorldOrientation)idx;
         }
     }
 }
