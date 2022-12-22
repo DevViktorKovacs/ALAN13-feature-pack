@@ -6,7 +6,6 @@ using ALAN13featurepack.Utility;
 using Godot;
 using System;
 using System.Linq;
-using static Godot.Tween;
 
 public class GameCharacter : KinematicBody2D
 {
@@ -14,30 +13,41 @@ public class GameCharacter : KinematicBody2D
 
 	public event EventHandler<CommandFinishedEventArgs> CommandFinished;
 
-	protected TileGridControl tileWorld;
-
-	public TileCell CurrentCell;
+	public TileCell CurrentCell { get; set; }
 
 	public StateController StateController { get; set; }
 
-	public float MoveDuration { get; internal set; }
-	public string CharacterName { get; internal set; }
+	public TweenController TweenController { get; set; }
 
-	public Vector2 Direction = new Vector2(0, -1);
+	public AnimatedSprite AnimatedSprite { get; set; }
+
+	public TileCell TargetCell { get; set; }
+
+	public TileGridControl TileWorld
+	{
+		get => tileWorld;
+		set => tileWorld = value;
+	}
 
 	public int SessionEnergyUsed { get; set; }
 
+	public string CharacterName { get; internal set; }
+
+	public float DefaultAnimationSpeed { get; set; }
+
+	public float MoveDuration => moveDuration;
+
+	public Vector2 Direction = new Vector2(1, 0);
+
 	public WorldOrientation Orientation = WorldOrientation.SouthEast;
-
-	public TweenController TweenController;
-
-	public AnimatedSprite AnimatedSprite;
-
-	public TileCell TargetCell;
 
 	protected Tween tween;
 
-	public float DefaultAnimationSpeed { get; set; }
+	protected TileGridControl tileWorld;
+
+	protected AnimationFactory animationFactory = new AnimationFactory();
+
+	protected float moveDuration = 1f;
 
 	protected float animationSpeed = 1;
 
@@ -110,7 +120,7 @@ public class GameCharacter : KinematicBody2D
 		TargetCell = tileWorld.GetTargetCell(Position, Direction);
 	}
 
-	public virtual void TweenProperty(string property, object initialValue, object finalValue, float duration = -1, EaseType easeType = EaseType.InOut)
+	public virtual void TweenProperty(string property, object initialValue, object finalValue, float duration = -1, Tween.EaseType easeType = Tween.EaseType.InOut)
 	{
 		TweenController.InterpolateProperty(this, property, initialValue, finalValue, duration, easeType);
 	}
@@ -119,4 +129,65 @@ public class GameCharacter : KinematicBody2D
 	{
 		CommandFinished?.Invoke(this, e);
 	}
+
+	public virtual long PlayOrientationSpecificAnimation(string animationName, WorldOrientation orientation, bool backwards = false)
+	{
+		DebugHelper.PrettyPrintVerbose($"{CharacterName}: Playing animation {animationName}{orientation}", ConsoleColor.Green);
+
+		long result = 0;
+
+		string animationFullName;
+
+		ResetAnimation();
+
+		animationFullName = $"{animationName}{StaticData.AnimationData[StaticData.GetAnimationKeysFromOrientation(orientation)]}";
+
+		AnimatedSprite.Play(animationFullName, backwards);
+
+		if (!animationFullName.Contains(StaticData.AnimationData[AnimationKeys.Idle]))
+		{
+			result = animationFactory.PushRecord(AnimatedSprite, animationFullName);
+		}
+
+		return result;
+	}
+
+	public void ResetAnimation()
+	{
+		AnimatedSprite.Frame = 0;
+	}
+	private void _on_AnimatedSprite_animation_finished()
+	{
+		var currentAnimationName = AnimatedSprite.Animation;
+
+		var record = animationFactory.PopRecord(currentAnimationName);
+
+		if (record == default) return;
+
+		var e = new AnimationFinishedEventArgs()
+		{
+			FrameCount = record.FrameCount,
+
+			Frame = AnimatedSprite.Frame,
+
+			AnimationName = record.AnimationName,
+
+			AnimiationID = record.ID
+		};
+
+		DebugHelper.PrettyPrintVerbose("Animation finished:", ConsoleColor.Green);
+
+		DebugHelper.PrettyPrintVerbose($"{currentAnimationName} (frame:{e.Frame} id: {e.AnimiationID})", ConsoleColor.Green);
+
+		StateController.AnimationFinishedAction?.Invoke(this, e);
+	}
+
+
+	private void _on_Tween_tween_all_completed()
+	{
+		StateController.TweenFinishedAction?.Invoke(this, new EventArgs());
+	}
 }
+
+
+

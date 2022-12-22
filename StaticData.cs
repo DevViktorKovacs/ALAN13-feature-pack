@@ -130,7 +130,22 @@ namespace ALAN13featurepack
 			{AnimationKeys.StopWalk, "StopWalk" },
 			{AnimationKeys.Walk, "Walk" },
 		};
-	}
+
+        public static AnimationKeys GetAnimationKeysFromOrientation(WorldOrientation orientation)
+        {
+            switch (orientation)
+            {
+                case WorldOrientation.NorthEast:
+                    return AnimationKeys.NorthEast;
+                case WorldOrientation.NorthWest:
+                    return AnimationKeys.NorthWest;
+                case WorldOrientation.SouthEast:
+                    return AnimationKeys.SouthEast;
+                default:
+                    return AnimationKeys.SouthWest;
+            }
+        }
+    }
 }
 
 public struct StructureData

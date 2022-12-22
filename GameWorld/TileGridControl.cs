@@ -112,7 +112,11 @@ namespace ALAN13featurepack.GameWorld
 
 		public void InitializeCharacter(GameCharacter gameCharacter, TileCell startingCell)
 		{ 
-			  gameCharacter.Position = startingCell.WorldPositionOfCenter;
+			gameCharacter.Position = startingCell.WorldPositionOfCenter;
+
+			gameCharacter.TileWorld = this;
+
+			gameCharacter.CharacterName = "Player";
         }
 
 		private void InitializeCells()

@@ -44,19 +44,25 @@ namespace ALAN13featurepack.GameWorld
 
         public StateController(GameCharacter subject, List<Timer> timers)
         {
+            parent = subject;
+
             StateDictionary = new Dictionary<StateEnum, ICharacterState>();
 
             InputQueue = new Queue<CommandKey>();
 
             StateDictionary = new Dictionary<StateEnum, ICharacterState>();
 
+            StateDictionary.Add(StateEnum.Idle, new IdleState(parent, State_StateFinished));
+
             StateDictionary.Add(StateEnum.Move, new MoveState(parent, State_StateFinished));
+
+            currentState = StateDictionary[StateEnum.Idle];
+
+            currentState.Active = true;
 
             stateEventTimer = timers.First();
 
             CommandTimer = timers.Last();
-
-            parent = subject;
         }
 
         public void IssueCommand(CommandKey input, object caller)
@@ -156,6 +162,12 @@ namespace ALAN13featurepack.GameWorld
 
                 return;
             }
+        }
+        public void SwitchState(StateEnum nextState)
+        {
+            var e = new StateFinishedEventArgs() { Input = CommandKey.Skip, NextState = nextState };
+
+            SwitchState(e);
         }
     }
 }

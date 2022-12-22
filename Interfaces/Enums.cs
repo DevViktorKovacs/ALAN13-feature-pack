@@ -67,6 +67,7 @@
         Walk = 18,
         RightClick = 19,
         Skip = 20,
+        SmartMove = 21,
     }
 
     public enum AssetKeys

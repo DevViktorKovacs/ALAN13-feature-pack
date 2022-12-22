@@ -3,9 +3,6 @@ using ALAN13featurepack.Utility;
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ALAN13featurepack.GameWorld.CharacterStates
 {
@@ -20,13 +17,15 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
             TweenFinishedHandler = Parent_TweenFinished;
 
             EventTimerTimedOutHandler = Parent_TimerTimedOut;
+
+            NextState = StateEnum.Idle;
         }
 
         public override void Invoke(CommandKey input)
         {
             if (input != CommandKey.None)
             {
-                DebugHelper.Print($"Current state {CurrentState} Active: {Active}");
+                DebugHelper.PrettyPrintVerbose($"Current state {CurrentState} Active: {Active}");
 
                 Subject.StateController.QueueInput(input);
 
@@ -36,6 +35,10 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
             Subject.UpdateTargetCell();
 
             var targetPosition = Subject.TargetCell.WorldPositionOfCenter;
+
+            DebugHelper.PrettyPrintVerbose($"Current position: {Subject.Position}");
+
+            DebugHelper.PrettyPrintVerbose($"Move target cell: {Subject.TargetCell.GridPosition}, position: {targetPosition}");
 
             Action<Vector2> moveAction;
 
@@ -47,8 +50,6 @@ namespace ALAN13featurepack.GameWorld.CharacterStates
 
                 return;
             }
-
-            NextState = StateEnum.Idle;
 
             Subject.TweenProperty(GodotProperties.position.ToString(), Subject.Position, targetPosition);
 
