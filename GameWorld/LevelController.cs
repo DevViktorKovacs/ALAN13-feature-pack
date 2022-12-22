@@ -130,6 +130,8 @@ public class LevelController : Node2D, ILevel
 	private void LevelController_MouseLeftUp(object sender, InputEventArgs e)
 	{
 		tileGrid.SelectCell();
+
+		character.StateController.IssueCommand(CommandKey.SmartMove, this);
 	}
 
 	private void LevelController_MouseScrollUp(object sender, InputEventArgs e)

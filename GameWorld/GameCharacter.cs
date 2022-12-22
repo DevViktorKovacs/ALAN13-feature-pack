@@ -132,12 +132,12 @@ public class GameCharacter : KinematicBody2D
 		CommandFinished?.Invoke(this, e);
 	}
 
-    public long PlayOrientationSpecificAnimation(string animationName)
-    {
-        return PlayOrientationSpecificAnimation(animationName, Orientation);
-    }
+	public long PlayOrientationSpecificAnimation(string animationName)
+	{
+		return PlayOrientationSpecificAnimation(animationName, Orientation);
+	}
 
-    public virtual long PlayOrientationSpecificAnimation(string animationName, WorldOrientation orientation, bool backwards = false)
+	public virtual long PlayOrientationSpecificAnimation(string animationName, WorldOrientation orientation, bool backwards = false)
 	{
 		DebugHelper.PrettyPrintVerbose($"{CharacterName}: Playing animation {animationName}{orientation}", ConsoleColor.Green);
 
@@ -164,91 +164,91 @@ public class GameCharacter : KinematicBody2D
 		AnimatedSprite.Frame = 0;
 	}
 
-    public override void _Process(float delta)
-    {
-        GetCurrentCell();
+	public override void _Process(float delta)
+	{
+		GetCurrentCell();
 
-        base._Process(delta);
-    }
+		base._Process(delta);
+	}
 
-    public void UpdateDirection()
-    {
-        Direction = StaticData.OrientationData[Orientation];
-    }
+	public void UpdateDirection()
+	{
+		Direction = StaticData.OrientationData[Orientation];
+	}
 
-    public TurnDirection GetTurnDirection(Vector2 targetGridPosition)
-    {
-        var targetOrientation = CurrentCell.GetNeigbourDirection(targetGridPosition);
+	public TurnDirection GetTurnDirection(Vector2 targetGridPosition)
+	{
+		var targetOrientation = CurrentCell.GetNeigbourDirection(targetGridPosition);
 
-        if (targetOrientation == Orientation) return TurnDirection.Stay;
+		if (targetOrientation == Orientation) return TurnDirection.Stay;
 
-        if (Orientation == WorldOrientation.SouthEast)
-        {
-            if (targetOrientation == WorldOrientation.NorthEast)
-            {
-                return TurnDirection.Left;
-            }
-            else
-            {
-                return TurnDirection.Right;
-            }
-        }
+		if (Orientation == WorldOrientation.SouthEast)
+		{
+			if (targetOrientation == WorldOrientation.NorthEast)
+			{
+				return TurnDirection.Left;
+			}
+			else
+			{
+				return TurnDirection.Right;
+			}
+		}
 
-        if (Orientation == WorldOrientation.NorthEast)
-        {
-            if (targetOrientation == WorldOrientation.SouthEast)
-            {
-                return TurnDirection.Right;
-            }
-            else
-            {
-                return TurnDirection.Left;
-            }
-        }
+		if (Orientation == WorldOrientation.NorthEast)
+		{
+			if (targetOrientation == WorldOrientation.SouthEast)
+			{
+				return TurnDirection.Right;
+			}
+			else
+			{
+				return TurnDirection.Left;
+			}
+		}
 
-        if ((int)Orientation < (int)targetOrientation)
-        {
-            return TurnDirection.Right;
-        }
-        else
-        {
-            return TurnDirection.Left;
-        }
-    }
+		if ((int)Orientation < (int)targetOrientation)
+		{
+			return TurnDirection.Right;
+		}
+		else
+		{
+			return TurnDirection.Left;
+		}
+	}
 
-    public bool ValidateMotionDirection(TileCell targetCell)
-    {
-        switch (Orientation)
-        {
-            case WorldOrientation.NorthEast:
+	public bool ValidateMotionDirection(TileCell targetCell)
+	{
+		switch (Orientation)
+		{
+			case WorldOrientation.NorthEast:
 
-                return (targetCell.GridPosition.x == CurrentCell.GridPosition.x
-                    && targetCell.GridPosition.y < CurrentCell.GridPosition.y) ? true : false;
+				return (targetCell.GridPosition.x == CurrentCell.GridPosition.x
+					&& targetCell.GridPosition.y < CurrentCell.GridPosition.y) ? true : false;
 
-            case WorldOrientation.SouthWest:
-                return (targetCell.GridPosition.x == CurrentCell.GridPosition.x
-                   && targetCell.GridPosition.y > CurrentCell.GridPosition.y) ? true : false;
+			case WorldOrientation.SouthWest:
+				return (targetCell.GridPosition.x == CurrentCell.GridPosition.x
+				   && targetCell.GridPosition.y > CurrentCell.GridPosition.y) ? true : false;
 
-            case WorldOrientation.SouthEast:
-                return (targetCell.GridPosition.y == CurrentCell.GridPosition.y
-                   && targetCell.GridPosition.x > CurrentCell.GridPosition.x) ? true : false;
+			case WorldOrientation.SouthEast:
+				return (targetCell.GridPosition.y == CurrentCell.GridPosition.y
+				   && targetCell.GridPosition.x > CurrentCell.GridPosition.x) ? true : false;
 
-            case WorldOrientation.NorthWest:
-                return (targetCell.GridPosition.y == CurrentCell.GridPosition.y
-                   && targetCell.GridPosition.x < CurrentCell.GridPosition.x) ? true : false;
+			case WorldOrientation.NorthWest:
+				return (targetCell.GridPosition.y == CurrentCell.GridPosition.y
+				   && targetCell.GridPosition.x < CurrentCell.GridPosition.x) ? true : false;
 
-            default:
-                return false;
+			default:
+				return false;
 
-        }
-    }
+		}
+	}
 
-    public virtual void TweenProperty(InterpolateParams interpolateParams)
-    {
-        TweenController.InterpolateProperty(interpolateParams);
-    }
+	public virtual void TweenProperty(InterpolateParams interpolateParams)
+	{
+		TweenController.InterpolateProperty(interpolateParams);
+	}
 
-    private void _on_AnimatedSprite_animation_finished()
+	private void _on_AnimatedSprite_animation_finished()
 	{
 		var currentAnimationName = AnimatedSprite.Animation;
 
@@ -284,10 +284,10 @@ public class GameCharacter : KinematicBody2D
 		StateController.OnCommandTimerTimedOut();
 	}
 
-    private void _on_StateTimer_timeout()
-    {
-        StateController.OnStateEventTimertimeout();
-    }
+	private void _on_StateTimer_timeout()
+	{
+		StateController.OnStateEventTimertimeout();
+	}
 }
 
 

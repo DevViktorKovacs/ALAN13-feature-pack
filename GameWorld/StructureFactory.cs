@@ -110,6 +110,8 @@ namespace ALAN13featurepack.GameWorld
 
 			cell.Structure = result;
 
+			cell.Occupant = Interfaces.Occupant.Obstacle;
+
 			result.GridPosition = cell.GridPosition;
 
 			result.TileCell = cell;
