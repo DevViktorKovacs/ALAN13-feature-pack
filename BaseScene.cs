@@ -1,10 +1,11 @@
 using ALAN13featurepack.Interfaces;
 using ALAN13featurepack.Utility;
 using Godot;
-using System;
 
 public class BaseScene : Node2D
 {
+	public ControlPanel ControlPanel { get; set; }
+
 	Loader loader;
 
 	LevelController currentLevel;
@@ -25,6 +26,8 @@ public class BaseScene : Node2D
 
 		loader.LoadAsset(pathToLevel, AssetKeys.FirstLevel.ToString(), 10);
 
+		ControlPanel = this.GetChildRecursive<ControlPanel>();
+
 		InputProcessor.VerboseLogging = true;
 
 		DebugHelper.PrettyPrintVerbose($"Initializing Steam API...");
@@ -40,11 +43,9 @@ public class BaseScene : Node2D
 			steamManager.Update();
 		}
 
-		catch (Exception e)
+		catch 
 		{
 			DebugHelper.PrintError($"Steam dll not found. Include steam_api64.dll in the root directory for steamworks integration!");
-
-			DebugHelper.PrintError($"Error details: {e}");
 		}
 	}
 
@@ -69,6 +70,10 @@ public class BaseScene : Node2D
 				loader.HideAll();
 
 				this.AddChild(currentLevel);
+
+				ControlPanel.Visible = true;
+
+				ControlPanel.TileGridControl = currentLevel.TileGridControl;
 
 				currentLevel.AssetName = loadingAssetname;
 

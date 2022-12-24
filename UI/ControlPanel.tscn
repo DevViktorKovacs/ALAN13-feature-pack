@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/ControlPanel.cs" type="Script" id=1]
+
+[node name="ControlPanel" type="Panel"]
+modulate = Color( 1, 1, 1, 0.729412 )
+margin_right = 250.0
+margin_bottom = 300.0
+script = ExtResource( 1 )
+
+[node name="ItemList" type="ItemList" parent="."]
+margin_left = 22.0
+margin_top = 49.0
+margin_right = 182.0
+margin_bottom = 149.0
+
+[node name="Label" type="Label" parent="."]
+margin_left = 22.0
+margin_top = 23.0
+margin_right = 127.0
+margin_bottom = 37.0
+text = "Pathfinding algo:"
+
+[node name="Label2" type="Label" parent="."]
+margin_left = 22.0
+margin_top = 163.0
+margin_right = 232.0
+margin_bottom = 211.0
+text = "Move the character by 
+the cursor buttons, or by clicking
+on a destination cell!
+
+You can also drag and move
+structures."
+
+[connection signal="item_selected" from="ItemList" to="." method="_on_ItemList_item_selected"]

@@ -76,6 +76,13 @@
         FirstLevel = 1,
     }
 
+    public enum PathfinderAlgorithm
+    { 
+        Default = 0,
+        Manhattan = 1,
+        AlanStar = 2,
+    }
+
     public enum StateEnum
     {
         Idle = 18,

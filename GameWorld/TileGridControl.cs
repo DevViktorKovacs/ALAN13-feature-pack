@@ -118,7 +118,7 @@ namespace ALAN13featurepack.GameWorld
 
 			gameCharacter.CharacterName = "Player";
 
-			GenerateAstar(true);
+			GenerateAstar(PathfinderAlgorithm.AlanStar);
         }
 
 		private void InitializeCells()
@@ -352,17 +352,23 @@ namespace ALAN13featurepack.GameWorld
 			return shadows.GetLocalMousePosition();
 		}
 
-        public IPathFinder GenerateAstar(bool withNewPathFinder = false)
+        public IPathFinder GenerateAstar(PathfinderAlgorithm pathfinderAlgorithm)
         {
             IPathFinder result;
 
-            if (withNewPathFinder)
-            {
-                result = new AlanStar();
-            }
-            else
-            {
-                result = new CustomAStar();
+			switch (pathfinderAlgorithm)
+			{
+				case PathfinderAlgorithm.Manhattan:
+					result = new CustomAStar();
+					break;
+
+				case PathfinderAlgorithm.AlanStar:
+					result = new AlanStar();
+					break;
+
+				default:
+                    result = new DefaultAStar();
+					break;
             }
 
             InitPathFinder(result);

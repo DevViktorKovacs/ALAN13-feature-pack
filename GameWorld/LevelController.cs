@@ -95,6 +95,8 @@ public class LevelController : Node2D, ILevel
 
 	private void LevelController_MouseLeftDown(object sender, InputEventArgs e)
 	{
+		if (ClickOnControlPanel()) return;
+		
 		var cell = tileGrid.GetCellAtMousePosition();
 
 		DebugHelper.PrettyPrintVerbose(cell, ConsoleColor.DarkGray);
@@ -129,6 +131,8 @@ public class LevelController : Node2D, ILevel
 
 	private void LevelController_MouseLeftUp(object sender, InputEventArgs e)
 	{
+		if (ClickOnControlPanel()) return;
+		
 		tileGrid.SelectCell();
 
 		character.StateController.IssueCommand(CommandKey.SmartMove, this);
@@ -156,5 +160,12 @@ public class LevelController : Node2D, ILevel
 		}
 
 		tileGrid.Scale(CurrentZoomInRate); ;
+	}
+
+	private bool ClickOnControlPanel()
+	{
+		var pos = this.GetGlobalMousePosition();
+
+		return (this.GetParent() as BaseScene).ControlPanel.GetRect().HasPoint(pos);
 	}
 }
