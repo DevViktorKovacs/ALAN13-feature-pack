@@ -14,10 +14,9 @@ This is a Godot (mono version) project, using C#. The code was built for our own
 * Debugging tools 
 * Input handling extensions
 ## Getting started
-To use this feature pack, you need the mono version of the Godot game engine, which is downloadable from the official [Godot engine portal](https://godotengine.org/download).
+To use this feature pack, you need the mono version of the Godot game engine, which is downloadable from the official [Godot engine portal (https://godotengine.org/download).
 I also recommend to use Microsoft Visual Studio or Visual Studio Code for writing and editing your code instead of the built-in IDE.
-For steam integration the steam_api64.dll is needed which is distributed with the steamworks SDK and can be found [here] https://partner.steamgames.com/doc/sdk/api/example
+For steam integration the steam_api64.dll is needed which is distributed with the steamworks SDK and can be found [here](https://partner.steamgames.com/doc/sdk/api/example).
 Other relevant steamworks features are inclded from rlabrecque/Steamworks.NET library. 
 ## Support
-To support the further development and extension of this free project you can buy the original game ALAN-13 on [steam]
-(https://store.steampowered.com/app/1888130/ALAN13_Reformation/)
+To support the further development and extension of this free project you can buy the original game ALAN-13 on [steam](https://store.steampowered.com/app/1888130/ALAN13_Reformation).
