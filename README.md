@@ -8,7 +8,7 @@ This is a Godot (mono version) project, using C#. The code was built for our own
 * Event driven state-machine for character movement 
 * Use-case specific Manhattan A* path finding algorithm
 * Steamwork integration 
-* Achievement management for Steamwork
+* Achievement management for Steamworks
 * Blender projects for dummy assests
 * C# helper and extension classes for easier navigation bewteen Godot nodes
 * Debugging tools 
