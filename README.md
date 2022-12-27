@@ -7,6 +7,7 @@ This is a Godot (mono version) project, using C#. The code was built for our own
 * Character movement implemented both for direct control (by the use directional keys) and for pathfinding by clicking on a destination cell
 * Event driven state-machine for character movement 
 * Use-case specific Manhattan A* path finding algorithm
+* Responsive resource loader
 * Steamwork integration 
 * Achievement management for Steamworks
 * Blender projects for dummy assets
